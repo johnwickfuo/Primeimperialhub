@@ -722,18 +722,29 @@ public function withdrawalcode(Request $request)
     //Send mail to one user
     public function sendmailtooneuser(Request $request)
     {
-        $mailduser = User::where('id', $request->user_id)->first();
+        $attachments = $this->prepareMailAttachments($request);
+        $mailduser = User::where('id', $request->user_id)->firstOrFail();
 
         // Initialize notification service
         $notificationService = app(\App\Services\NotificationService::class);
 
         // Send email
-        Mail::to($mailduser->email)->send(new NewNotification($request->message, $request->subject, $mailduser->name));
+        Mail::to($mailduser->email)->send(
+            new NewNotification(
+                $request->message,
+                $request->subject,
+                $mailduser->name,
+                null,
+                null,
+                null,
+                $attachments
+            )
+        );
 
         // Create user notification about the message
         $notificationService->createUserNotification(
             $request->user_id,
-            '{{$request->subject}}',
+            $request->subject,
             "You have received a new message: {$request->message}",
             'message'
         );
@@ -754,39 +765,104 @@ public function withdrawalcode(Request $request)
     // Send Mail to all users
     public function sendmailtoall(Request $request)
     {
+        $attachments = $this->prepareMailAttachments($request);
 
         if ($request->category == "All") {
-            User::select(['email', 'id'])->chunkById(100, function ($users) use ($request) {
+            User::select(['email', 'id'])->chunkById(100, function ($users) use ($request, $attachments) {
                 foreach ($users as $user) {
-                    Mail::to($user->email)->send(new NewNotification($request->message, $request->subject, $request->title, null, null, $request->greet));
+                    Mail::to($user->email)->send(
+                        new NewNotification(
+                            $request->message,
+                            $request->subject,
+                            $request->title,
+                            null,
+                            null,
+                            $request->greet,
+                            $attachments
+                        )
+                    );
                 }
             });
         } elseif ($request->category == "No active plans") {
             User::whereDoesntHave('plans', function (Builder $query) {
                 $query->where('active', '!=', 'yes');
-            })->select(['email', 'id'])->chunkById(100, function ($users) use ($request) {
+            })->select(['email', 'id'])->chunkById(100, function ($users) use ($request, $attachments) {
                 foreach ($users as $user) {
-                    Mail::to($user->email)->send(new NewNotification($request->message, $request->subject, $request->title, null, null, $request->greet));
+                    Mail::to($user->email)->send(
+                        new NewNotification(
+                            $request->message,
+                            $request->subject,
+                            $request->title,
+                            null,
+                            null,
+                            $request->greet,
+                            $attachments
+                        )
+                    );
                 }
             });
         } elseif ($request->category == "No deposit") {
-            User::doesntHave('dp')->select(['email', 'id'])->chunkById(100, function ($users) use ($request) {
+            User::doesntHave('dp')->select(['email', 'id'])->chunkById(100, function ($users) use ($request, $attachments) {
                 foreach ($users as $user) {
-                    Mail::to($user->email)->send(new NewNotification($request->message, $request->subject, $request->title, null, null, $request->greet));
+                    Mail::to($user->email)->send(
+                        new NewNotification(
+                            $request->message,
+                            $request->subject,
+                            $request->title,
+                            null,
+                            null,
+                            $request->greet,
+                            $attachments
+                        )
+                    );
                 }
             });
         } elseif ($request->category == "Select Users") {
             DB::table('users')
                 ->whereIn('id', array_column($request->users, null))
                 ->select(['email', 'id'])
-                ->chunkById(100, function ($users) use ($request) {
+                ->chunkById(100, function ($users) use ($request, $attachments) {
                     foreach ($users as $user) {
-                        Mail::to($user->email)->send(new NewNotification($request->message, $request->subject, $request->title, null, null, $request->greet));
+                        Mail::to($user->email)->send(
+                            new NewNotification(
+                                $request->message,
+                                $request->subject,
+                                $request->title,
+                                null,
+                                null,
+                                $request->greet,
+                                $attachments
+                            )
+                        );
                     }
                 });
         }
 
         return redirect()->back()->with('success', 'Your message was sent successfully!');
+    }
+
+    /**
+     * Validate uploaded email attachments and convert them to a format the
+     * mailable can use while this request is still active.
+     */
+    private function prepareMailAttachments(Request $request)
+    {
+        $request->validate([
+            'attachments' => 'nullable|array|max:5',
+            'attachments.*' => 'file|max:10240|mimes:pdf,doc,docx,xls,xlsx,csv,txt,jpg,jpeg,png,zip',
+        ]);
+
+        $attachments = [];
+
+        foreach ($request->file('attachments', []) as $file) {
+            $attachments[] = [
+                'path' => $file->getRealPath(),
+                'name' => $file->getClientOriginalName(),
+                'mime' => $file->getMimeType(),
+            ];
+        }
+
+        return $attachments;
     }
 
     // mark user trade as profit
