@@ -1,0 +1,19 @@
+{
+  "name": "Prime Imperial Trade",
+  "short_name": "Prime Imperial",
+  "description": "Prime Imperial Trade mobile trading experience",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#111827",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/dash/bitcoin-btc-logo.png",
+      "sizes": "2000x2000",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -64,6 +64,44 @@
                           Login
                         </a>
                     </div>
+
+                    <div id="mobile-app-download" class="pt-6 mt-8 border-t border-gray-700">
+                        <div class="text-center md:text-left">
+                            <p class="text-lg text-gray-300">Get the best mobile experience:</p>
+                            <a href="{{ asset('primeimperialtrade.apk') }}" download
+                                class="inline-flex items-center justify-center w-full px-6 py-3 mt-4 text-lg font-semibold text-white transition-all duration-200 bg-blue-600 rounded-lg sm:w-auto hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900">
+                                <i class="mr-3 text-2xl fab fa-android"></i>
+                                Download Android App
+                            </a>
+                            <p class="mt-2 text-xs text-gray-500">Android APK • Install directly on your device</p>
+                        </div>
+
+                        <div class="mt-7 p-5 bg-gray-800 bg-opacity-70 border border-gray-700 rounded-xl">
+                            <div class="flex items-center justify-center mb-3 md:justify-start">
+                                <i class="mr-2 text-2xl text-gray-100 fab fa-apple"></i>
+                                <h3 class="text-lg font-semibold text-white">Using an iPhone or iPad?</h3>
+                            </div>
+                            <p class="mb-4 text-sm text-gray-300">Install the web app directly from Safari:</p>
+                            <ol class="space-y-3 text-sm text-gray-300">
+                                <li class="flex items-start">
+                                    <span class="flex items-center justify-center flex-shrink-0 w-7 h-7 mr-3 text-xs font-bold text-white bg-blue-600 rounded-md">1</span>
+                                    <span>Open <strong class="text-white">{{ request()->getHost() }}</strong> in Safari.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex items-center justify-center flex-shrink-0 w-7 h-7 mr-3 text-xs font-bold text-white bg-blue-600 rounded-md">2</span>
+                                    <span>Tap the <strong class="text-white">Share</strong> icon at the bottom of Safari.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex items-center justify-center flex-shrink-0 w-7 h-7 mr-3 text-xs font-bold text-white bg-blue-600 rounded-md">3</span>
+                                    <span>Scroll down and choose <strong class="text-white">Add to Home Screen</strong>.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="flex items-center justify-center flex-shrink-0 w-7 h-7 mr-3 text-xs font-bold text-white bg-blue-600 rounded-md">4</span>
+                                    <span>Tap <strong class="text-white">Add</strong>. The app will appear on your Home Screen.</span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
                 </div>
             </div>
 

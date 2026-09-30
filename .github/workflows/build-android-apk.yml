@@ -1,0 +1,72 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'android-app/**'
+      - '.github/workflows/build-android-apk.yml'
+      - 'dash/bitcoin-btc-logo.png'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK packages
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Prepare Bitcoin app icon
+        run: |
+          mkdir -p android-app/app/src/main/res/drawable
+          cp dash/bitcoin-btc-logo.png android-app/app/src/main/res/drawable/bitcoin_logo.png
+
+      - name: Build installable APK
+        run: gradle --no-daemon -p android-app :app:assembleDebug
+
+      - name: Put APK in public_html root
+        run: |
+          cp android-app/app/build/outputs/apk/debug/app-debug.apk primeimperialtrade.apk
+          sha256sum primeimperialtrade.apk > primeimperialtrade.apk.sha256
+
+      - name: Upload APK build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: primeimperialtrade-apk
+          path: |
+            primeimperialtrade.apk
+            primeimperialtrade.apk.sha256
+
+      - name: Commit APK to repository root
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add primeimperialtrade.apk primeimperialtrade.apk.sha256
+          if git diff --cached --quiet; then
+            echo "APK is unchanged."
+          else
+            git commit -m "Build Android APK"
+            git push
+          fi

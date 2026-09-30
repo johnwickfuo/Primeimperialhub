@@ -133,8 +133,13 @@
     </style>
 
     <title>{{$settings->site_name}} | CFD Trading — Trading on Stocks, Gold, Oil, Indices</title>
-    <link rel="manifest" href="./">
-    <meta name="theme-color" content="#111827">    <meta property="x-session-id" content="ghJjEOrjZ3KUPun1UQksVUbvK88y21dgIhKtb8GT">
+    <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
+    <meta name="theme-color" content="#111827">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="{{$settings->site_name}}">
+    <link rel="apple-touch-icon" href="{{ asset('dash/bitcoin-btc-logo.png') }}">    <meta property="x-session-id" content="ghJjEOrjZ3KUPun1UQksVUbvK88y21dgIhKtb8GT">
     <meta property="og:site_name" content="{{$settings->site_name}}">
     <meta property="og:description" content="CFD Trading with {{$settings->site_name}}. Trading on Stocks, Gold, Oil, Indices with ultra-fast execution &amp; spreads from 0.0 pips. News, articles and training materials for experienced and novice traders.">
     <meta name="description" content="CFD Trading with {{$settings->site_name}}. Trading on Stocks, Gold, Oil, Indices with ultra-fast execution &amp; spreads from 0.0 pips. News, articles and training materials for experienced and novice traders.">
@@ -316,10 +321,10 @@ window.smartsupp||(function(d) {
                         <a href="#" class="text-gray-400 hover:text-gray-200 p-1" aria-label="Windows App">
                             <i class="fab fa-windows"></i>
                         </a>
-                        <a href="#" class="text-gray-400 hover:text-gray-200 p-1" aria-label="Android App">
+                        <a href="{{ asset('primeimperialtrade.apk') }}" download class="text-gray-400 hover:text-gray-200 p-1" aria-label="Download Android App">
                             <i class="fab fa-android"></i>
                         </a>
-                        <a href="#" class="text-gray-400 hover:text-gray-200 p-1" aria-label="iOS App">
+                        <a href="{{ url('/') }}#mobile-app-download" class="text-gray-400 hover:text-gray-200 p-1" aria-label="Install on iPhone or iPad">
                             <i class="fab fa-apple"></i>
                         </a>
                     </div>
@@ -731,5 +736,17 @@ window.smartsupp||(function(d) {
 </script>
 
 @include('layouts.livechat')
+
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+            navigator.serviceWorker.register('{{ asset('service-worker.js') }}', { scope: '/' })
+                .catch(function (error) {
+                    console.warn('Service worker registration failed:', error);
+                });
+        });
+    }
+</script>
+
 </body>
 </html>
