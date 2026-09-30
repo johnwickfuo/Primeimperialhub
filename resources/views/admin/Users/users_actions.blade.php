@@ -194,7 +194,7 @@
              </div>
              <div class="modal-body ">
                  <p class="">This message will be sent to {{ $user->name }}</p>
-                 <form style="padding:3px;" role="form" method="post" action="{{ route('sendmailtooneuser') }}">
+                 <form style="padding:3px;" role="form" method="post" action="{{ route('sendmailtooneuser') }}" enctype="multipart/form-data">
                      @csrf
                      <div class=" form-group">
                          <input type="text" name="subject" class="form-control  " placeholder="Subject" required>
@@ -202,6 +202,14 @@
                      <div class=" form-group">
                          <textarea placeholder="Type your message here" class="form-control  " name="message" row="8"
                              placeholder="Type your message here" required></textarea>
+                     </div>
+                     <div class="form-group">
+                         <label>Attachments (optional)</label>
+                         <input type="file" name="attachments[]" class="form-control"
+                             accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.jpg,.jpeg,.png,.zip" multiple>
+                         <small class="form-text text-muted">
+                             Up to 5 files, maximum 10 MB per file.
+                         </small>
                      </div>
                      <div class=" form-group">
                          <input type="hidden" name="user_id" value="{{ $user->id }}">
