@@ -29,7 +29,7 @@ if (Auth('admin')->User()->dashboard_style == 'light') {
                         </di>
                         <div class="card p-2 shadow ">
                             <div class="card-body">
-                                <form method="post" action="{{ route('sendmailtoall') }}">
+                                <form method="post" action="{{ route('sendmailtoall') }}" enctype="multipart/form-data">
                                     @csrf
                                     <div class=" form-group">
                                         <h6 class="text-{{ $text }}">Category</h6>
@@ -67,6 +67,14 @@ if (Auth('admin')->User()->dashboard_style == 'light') {
                                     <div class=" form-group">
                                         <textarea placeholder="Type your message here" class="form-control  text-{{ $text }} ckeditor" name="message"
                                             row="8" placeholder="Type your message here" required></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <h6 class="text-{{ $text }}">Attachments (optional)</h6>
+                                        <input type="file" name="attachments[]" class="form-control"
+                                            accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.jpg,.jpeg,.png,.zip" multiple>
+                                        <small class="form-text text-muted">
+                                            You can attach up to 5 files. Maximum size: 10 MB per file.
+                                        </small>
                                     </div>
                                     <div class=" form-group">
                                         <button type="submit" class="btn btn-secondary">
